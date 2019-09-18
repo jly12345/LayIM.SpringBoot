@@ -1,9 +1,9 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/layim
+    driver-class-name: net.sf.log4jdbc.DriverSpy
+    url: jdbc:log4jdbc:mysql://192.168.189.128:3306/layim?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&autoReconnect=true
     username: root
-    password: 123123
+    password: root
   http:
         multipart:
           max-file-size: 30MB
@@ -21,7 +21,7 @@ spring:
     encoding: utf-8
     content-type: text/html
     mode: HTML5
-debug: false
+#debug: true
 server:
      port: 8887
 
@@ -30,3 +30,12 @@ layim.websocket:
     port: 8888
     heartBeatTimeout: 0
 layim.upload.dir: G:\JavaProject\SpringBootLayIM\upload
+
+logging:
+  level:
+    jdbc:
+      only: ERROR
+      audit: ERROR
+      sqltiming: ERROR
+      resultset: ERROR
+      connection: ERROR
