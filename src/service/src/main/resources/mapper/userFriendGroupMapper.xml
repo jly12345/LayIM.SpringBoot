@@ -12,4 +12,10 @@
             #{id}
         </foreach>
     </select>
+
+    <select id="getAllByUserId" resultType="string">
+        select c.uid from user a inner join friend_group b on a.id=b.uid inner join user_friend_group c on b.id=c.group_id
+        where a.id=#{uid}
+    </select>
+
 </mapper>

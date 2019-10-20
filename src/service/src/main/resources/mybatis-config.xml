@@ -5,9 +5,27 @@
     <!-- 引用db.properties配置文件 -->
     <properties resource="db.properties" />
 
+    <settings>
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+    </settings>
+
     <typeAliases>
         <typeAlias type="com.fyp.service.utils.DruidDataSourceFactory" alias="DRUID"/>
     </typeAliases>
+
+    <typeHandlers>
+        <typeHandler handler="org.apache.ibatis.type.InstantTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.LocalDateTimeTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.LocalDateTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.LocalTimeTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.OffsetDateTimeTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.OffsetTimeTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.ZonedDateTimeTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.YearTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.MonthTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.YearMonthTypeHandler" />
+        <typeHandler handler="org.apache.ibatis.type.JapaneseDateTypeHandler" />
+    </typeHandlers>
 
     <environments default="development">
         <environment id="development">
@@ -32,4 +50,5 @@
         <mapper resource="mapper/userBigGroupMapper.xml"/>
         <mapper resource="mapper/msgRecordMapper.xml"/>
     </mappers>
+
 </configuration>

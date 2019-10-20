@@ -27,8 +27,58 @@
             server:'ws://127.0.0.1:8889',
             token:'/account/token'
         });
-        socket.on('msg',function (d) {
-            layim.getMessage(d);
+        socket.on('msg',function (e) {
+            var msg = JSON.parse(e.data);
+            console.log(msg);
+            var handleChat = function (msg) {
+                if (selfFlag) {
+                    selfFlag = false;
+                    return;
+                }
+                layim.getMessage(msg);
+            }
+            var handleStatus = function (msg) {
+                var status = '';
+                if (typeof msg.count !== 'undefined') {
+                    status = msg.count + '人在线';
+                } else {
+                    status = msg.online ? '在线' : '离线';
+                }
+                layim.setChatStatus('<span style="color:#FF5722;">' + status + '</span>');
+            }
+            if (msg.mtype) {
+                switch (msg.mtype) {
+                    case -1:
+                        return console.log(msg.msg);
+                    case socket.mtype.chatFriend:
+                    case socket.mtype.chatGroup:
+                        handleChat(msg);
+                        break;
+                    case socket.mtype.checkIsOnline:
+                    case socket.mtype.checkOnlineCount:
+                        handleStatus(msg);
+                        break;
+                    case socket.mtype.serverNotice:
+                        layim.msgbox(msg.count);
+                        break;
+                    case socket.mtype.addFriendNotice:
+                        layim.addList({
+                            type: msg.type,
+                            avatar: msg.avatar,
+                            username: msg.username,
+                            groupid: msg.groupid,
+                            sign: msg.sign,
+                            id: msg.id
+                        });
+                        msg.mtype = socket.mtype.chatFriend;
+                        msg.content = "我们已经是好友啦，一起来聊天吧！";
+                        layim.getMessage(msg);
+                        break;
+                    case socket.mtype.onofflineNotice:
+                        layim.setFriendStatus(msg.id, msg.status);
+                        break;
+                }
+            }
         })
         //基础配置
         layim.config({
@@ -58,24 +108,34 @@
 
         //监听在线状态的切换事件
         layim.on('online', function(data){
-            //console.log(data);
+            console.log(data);
         });
         //监听签名修改
         layim.on('sign', function(value){
-            //console.log(value);
+            console.log(value);
         });
 
         //监听layim建立就绪
         layim.on('ready', function(res){
-
+            console.log(res);
         });
         //监听发送消息
         layim.on('sendMessage', function(data){
-            socket.send(data);
+            var To = data.to;
+            var t = data.to.type == 'friend';
+            if (!t) {
+                selfFlag = true;
+            }
+            socket.send({
+                mtype: (t ? socket.mtype.chatFriend : socket.mtype.chatGroup),
+                content: data.mine.content,
+                toid: data.to.id
+            });
+            return;
         });
         //监听查看群员
         layim.on('members', function(data){
-            //console.log(data);
+            console.log(data);
         });
 
         //监听聊天窗口的切换

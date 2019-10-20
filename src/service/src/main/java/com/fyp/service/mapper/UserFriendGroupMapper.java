@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface UserFriendGroupMapper {
     List<UserFriendGroup> getUserIdsByGroupIds(List<Long> groupIds);
+
+    List<String> getAllByUserId(long userId);
 }

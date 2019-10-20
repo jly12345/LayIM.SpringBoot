@@ -1,23 +1,35 @@
 package com.fyp.service.impl;
 
-import com.fyp.entity.*;
+import com.fyp.entity.BigGroup;
+import com.fyp.entity.FriendGroup;
+import com.fyp.entity.MsgRecord;
+import com.fyp.entity.User;
+import com.fyp.entity.UserFriendGroup;
 import com.fyp.entity.result.ChatRecordResult;
 import com.fyp.entity.result.GroupMemberResult;
 import com.fyp.entity.result.InitResult;
 import com.fyp.entity.result.JsonResult;
 import com.fyp.service.intf.LayIMService;
-import com.fyp.service.mapper.*;
+import com.fyp.service.mapper.BigGroupMapper;
+import com.fyp.service.mapper.FriendGroupMapper;
+import com.fyp.service.mapper.MsgRecordMapper;
+import com.fyp.service.mapper.UserBigGroupMapper;
+import com.fyp.service.mapper.UserFriendGroupMapper;
+import com.fyp.service.mapper.UserMapper;
 import com.fyp.service.utils.MyBatisUtil;
 import com.fyp.service.utils.Utils;
 import org.apache.ibatis.session.SqlSession;
-import org.omg.PortableServer.THREAD_POLICY_ID;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.fyp.entity.LayIMConstants.*;
+import static com.fyp.entity.LayIMConstants.CHAT_TYPE_FRIEND;
+import static com.fyp.entity.LayIMConstants.CHAT_TYPE_GROUP;
+import static com.fyp.entity.LayIMConstants.CHAT_TYPE_OTHER;
 
 @Service
 public class DefaultLayIMService implements LayIMService {
@@ -168,7 +180,7 @@ public class DefaultLayIMService implements LayIMService {
                 userIds.add(id);
             }
             UserMapper userMapper = session.getMapper(UserMapper.class);
-           List<User> users = userMapper.getUsersByIds(userIds);
+            List<User> users = userMapper.getUsersByIds(userIds);
 
             for (MsgRecord record : list) {
                 ChatRecordResult res = new ChatRecordResult();
@@ -189,5 +201,27 @@ public class DefaultLayIMService implements LayIMService {
             session.close();
         }
 
+    }
+
+    @Override
+    public List<User> getAllUsers(Long userId) {
+        SqlSession session = MyBatisUtil.getSession();
+        try {
+            UserMapper userMapper = session.getMapper(UserMapper.class);
+            return userMapper.getAllUsers(userId);
+        } finally {
+            session.close();
+        }
+    }
+
+    @Override
+    public List<String> getAllFriends(long userId) {
+        SqlSession session = MyBatisUtil.getSession();
+        try {
+            UserFriendGroupMapper userFriendGroupMapper = session.getMapper(UserFriendGroupMapper.class);
+            return userFriendGroupMapper.getAllByUserId(userId);
+        } finally {
+            session.close();
+        }
     }
 }

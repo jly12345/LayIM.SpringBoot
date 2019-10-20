@@ -7,4 +7,5 @@ import java.util.List;
 public interface UserMapper {
     User getUser(Long id);
     List<User> getUsersByIds(List<Long> userIds);
+    List<User> getAllUsers(Long id);
 }

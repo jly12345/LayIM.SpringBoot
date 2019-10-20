@@ -4,20 +4,25 @@
 <mapper namespace="com.fyp.service.mapper.UserMapper">
 
     <sql id="user_base_column">
-        id,avatar,user_name,sign
+        id,avatar,user_name,sign,create_at
     </sql>
 
     <resultMap id="userMap" type="com.fyp.entity.User">
         <result column="user_name" property="username"/>
+        <result column="create_at" property="createAt"/>
     </resultMap>
     <select id="getUser" parameterType="long" resultMap="userMap">
-        select <include refid="user_base_column"/> from User where id=#{id}
+        select <include refid="user_base_column"/> from user where id=#{id}
     </select>
 
     <select id="getUsersByIds" resultMap="userMap">
-        select  <include refid="user_base_column"/> from User where id in
+        select  <include refid="user_base_column"/> from user where id in
         <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
             #{id}
         </foreach>
+    </select>
+
+    <select id="getAllUsers" resultMap="userMap">
+        select  <include refid="user_base_column"/> from user where id <![CDATA[ <> ]]> #{id}
     </select>
 </mapper>

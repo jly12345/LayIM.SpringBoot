@@ -18,4 +18,8 @@ public interface LayIMService {
     JsonResult addRecord(MsgRecord record);
 
     JsonResult getChatRecords(Long userId,Long id,String type,Long lastId);
+
+    List<User> getAllUsers(Long userId);
+
+    List<String> getAllFriends(long userId);
 }
